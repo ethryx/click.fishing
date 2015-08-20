@@ -1,0 +1,54 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#entry-point {
+  height: 100%;
+}
+
+.game-container {
+  height: 100%;
+  display: flex;
+  background: url(../images/dark_exa.png)
+}
+
+.game-container .section {
+  height: 100%;
+  color: #fff;
+}
+
+.game-container .section.left-side {
+  flex-basis: 25%;
+  background-color: rgba(25, 25, 25, 0.7);
+}
+
+.game-container .section.middle {
+  flex-basis: 50%;
+}
+
+.game-container .section.right-side {
+  flex-basis: 25%;
+  background-color: rgba(25, 25, 25, 0.7);
+}
+
+.panel.stats-panel {
+  height: 50%;
+}
+
+.panel.chat-panel {
+  height: 50%;
+}
+
+.panel.item-panel {
+  height: 100%;
+}
+
+.panel.cookie-panel {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
