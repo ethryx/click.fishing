@@ -6,6 +6,7 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var reactify = require('reactify');
 var streamify = require('gulp-streamify');
+var nodemon = require('gulp-nodemon');
 
 var path = {
   HTML: 'src/index.html',
@@ -51,7 +52,7 @@ gulp.task('watch', function() {
     watcher.bundle()
       .pipe(source(path.OUT))
       .pipe(gulp.dest(path.DEST_JS))
-      console.log('Updated!');
+      console.log('JSX Recompiled!');
   })
     .bundle()
     .pipe(source(path.OUT))
@@ -70,6 +71,7 @@ gulp.task('build', function(){
     .pipe(gulp.dest(path.DEST_BUILD));
 });
 
+// Replace html
 gulp.task('replaceHTML', function(){
   gulp.src(path.HTML)
     .pipe(htmlreplace({
@@ -78,6 +80,13 @@ gulp.task('replaceHTML', function(){
     .pipe(gulp.dest(path.DEST));
 });
 
+gulp.task('startServer', function() {
+  nodemon({
+    script: 'server/app.js',
+    ignore: ['dist', 'node_modules', 'src', 'gulpfile.js']
+  });
+});
+
 gulp.task('production', ['replaceHTML', 'build']);
 
-gulp.task('default', ['copy', 'watch']);
+gulp.task('default', ['copy', 'startServer', 'watch']);
