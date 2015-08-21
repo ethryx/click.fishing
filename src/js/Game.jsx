@@ -1,8 +1,8 @@
 var React = require('react');
-var StatsPanel = require('./StatsPanel.jsx');
-var CookiePanel = require('./CookiePanel.jsx');
-var ChatPanel = require('./ChatPanel.jsx');
-var ItemPanel = require('./ItemPanel.jsx');
+var StatsPanel = require('./components/StatsPanel.jsx');
+var CookiePanel = require('./components/CookiePanel.jsx');
+var ChatPanel = require('./components/ChatPanel.jsx');
+var ItemPanel = require('./components/ItemPanel.jsx');
 
 var Game = React.createClass({
   render: function() {

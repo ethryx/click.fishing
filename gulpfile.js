@@ -12,8 +12,8 @@ var path = {
   HTML: 'src/index.html',
   CSS: 'src/css/styles.css',
   IMAGES: 'src/images/*.png',
-  MINIFIED_OUT: 'build.min.js',
-  OUT: 'build.js',
+  MINIFIED_OUT: 'bundle.min.js',
+  OUT: 'bundle.js',
   DEST: 'dist',
   DEST_BUILD: 'dist/build',
   DEST_JS: 'dist/js',
@@ -51,7 +51,7 @@ gulp.task('watch', function() {
   return watcher.on('update', function () {
     watcher.bundle()
       .pipe(source(path.OUT))
-      .pipe(gulp.dest(path.DEST_JS))
+      .pipe(gulp.dest(path.DEST_JS));
       console.log('JSX Recompiled!');
   })
     .bundle()
