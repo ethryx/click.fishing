@@ -12,6 +12,7 @@
     "browserify": "^11.0.1",
     "gulp": "^3.9.0",
     "gulp-html-replace": "^1.5.1",
+    "gulp-less": "^3.0.3",
     "gulp-nodemon": "^2.0.3",
     "gulp-react": "^3.0.1",
     "gulp-streamify": "^1.0.0",

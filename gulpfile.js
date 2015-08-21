@@ -7,11 +7,13 @@ var watchify = require('watchify');
 var reactify = require('reactify');
 var streamify = require('gulp-streamify');
 var nodemon = require('gulp-nodemon');
+var less = require('gulp-less');
 
 var path = {
-  HTML: 'src/index.html',
-  CSS: 'src/css/styles.css',
-  IMAGES: 'src/images/*.png',
+  WATCH_HTML: 'src/index.html',
+  WATCH_CSS: ['src/css/*.less', 'src/css/**/*.less'],
+  WATCH_IMAGES: 'src/images/*.png',
+  LESS_STYLES: 'src/css/styles.less',
   MINIFIED_OUT: 'bundle.min.js',
   OUT: 'bundle.js',
   DEST: 'dist',
@@ -23,23 +25,30 @@ var path = {
 };
 
 // Copy index.html to dist
-gulp.task('copy', function(){
+gulp.task('copyAssets', function(){
   // HTML
-  gulp.src(path.HTML)
+  gulp.src(path.WATCH_HTML)
     .pipe(gulp.dest(path.DEST));
-  // CSS
-  gulp.src(path.CSS)
-    .pipe(gulp.dest(path.DEST_CSS));
   // Images
-  gulp.src(path.IMAGES)
+  gulp.src(path.WATCH_IMAGES)
     .pipe(gulp.dest(path.DEST_IMAGES));
+});
+
+// Process styles (LESS)
+gulp.task('less', function() {
+  return gulp
+    .src(path.LESS_STYLES)
+    .pipe(less({
+      paths: [ __dirname + '/src/css' ]
+    }))
+    .pipe(gulp.dest(path.DEST_CSS));
 });
 
 // Watch files
 gulp.task('watch', function() {
-  gulp.watch(path.HTML, ['copy']);
-  gulp.watch(path.CSS, ['copy']);
-  gulp.watch(path.IMAGES, ['copy']);
+  gulp.watch(path.WATCH_HTML, ['copyAssets']);
+  gulp.watch(path.WATCH_CSS, ['less']);
+  gulp.watch(path.WATCH_IMAGES, ['copyAssets']);
 
   var watcher = watchify(browserify({
     entries: [path.ENTRY_POINT],
@@ -60,7 +69,7 @@ gulp.task('watch', function() {
 });
 
 // Build for production
-gulp.task('build', function(){
+gulp.task('buildJs', function(){
   browserify({
     entries: [path.ENTRY_POINT],
     transform: [reactify]
@@ -87,6 +96,6 @@ gulp.task('startServer', function() {
   });
 });
 
-gulp.task('production', ['replaceHTML', 'build']);
+gulp.task('production', ['replaceHTML', 'buildJs']);
 
-gulp.task('default', ['copy', 'startServer', 'watch']);
+gulp.task('default', ['copyAssets', 'less', 'startServer', 'watch']);
