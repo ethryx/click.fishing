@@ -6,6 +6,10 @@ var ActionPanel = require('./components/ActionPanel.jsx');
 var InfoPanel = require('./components/InfoPanel.jsx');
 
 var Game = React.createClass({
+  componentDidMount: function() {
+    console.log('Welcome to click.fishing!');
+  },
+
   render: function() {
     return (
       <div className="game-container">
