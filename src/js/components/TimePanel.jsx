@@ -1,45 +1,41 @@
 var React = require('react');
+var TimeStore = require('../stores/TimeStore');
 
 var TimePanel = React.createClass({
 
   getInitialState: function() {
-    return {
-      hour: 0,
-      minute: 0,
-      styles: {
-        margin-top: 10px;
-      }
-    };
+    return {};
   },
 
   positionSunMoon: function() {
-    var timePanelInnerWidth = $('.time-panel .panel-inner').width();
+    var currentMinute = TimeStore.getMinute();
+    var isDay = TimeStore.getIsDay();
+    var timePanelInnerWidth = ($('.time-panel').width() - 20);
     var sunSize = $('.time-panel .panel-inner .sun').width();
-    var sectionSize = Math.floor( timePanelInnerWidth / sunSize );
+    var furthestRight = (timePanelInnerWidth - sunSize);
 
-    console.log('sectionSize', sectionSize);
+    // Let's adjust currentMinute so it is always 0 - 29
+    if(currentMinute > 29) {
+      currentMinute -= 30;
+    }
 
-    // 0 - 29: Sun
+    if(isDay) {
+      $('.time-panel .panel-inner .sun').removeClass('moon');
+    } else {
+      $('.time-panel .panel-inner .sun').addClass('moon');
+    }
 
-    // 30 - 59: Moon
+    var minutePosition = (currentMinute * furthestRight) / 29;
 
-  },
-
-  tick: function() {
-    var date = new Date();
-    var hour = date.getHours();
-    var minute = date.getMinutes();
-
-    this.setState({
-      hour: hour,
-      minute: minute
+    $('.time-panel .panel-inner').animate({
+      marginLeft: minutePosition + 'px'
     });
 
-    this.positionSunMoon();
   },
 
   componentDidMount: function() {
-    this.interval = setInterval(this.tick, 1000);
+    this.interval = setInterval(this.positionSunMoon, 1000);
+    this.positionSunMoon();
   },
 
   componentWillUnmount: function() {
@@ -51,7 +47,7 @@ var TimePanel = React.createClass({
       <div className="panel time-panel">
         <div className="panel-inner">
 
-          <div className="sun"></div>
+          <div className="sun" />
 
         </div>
       </div>

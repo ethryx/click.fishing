@@ -1,4 +1,5 @@
 var React = require('react');
+var GameStore = require('../stores/GameStore');
 
 var InfoPanel = React.createClass({
 
@@ -6,7 +7,7 @@ var InfoPanel = React.createClass({
     return (
       <div className="panel info-panel">
         <div className="panel-inner">
-          InfoPanel
+          Fish: 0
         </div>
       </div>
     );

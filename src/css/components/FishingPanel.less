@@ -1,4 +1,23 @@
 .fishing-panel {
   .inner-shadow;
   flex-basis: 30%;
+  background: url(../images/water_texture.jpg);
+  background-size: cover;
+  opacity: 0.8;
+  overflow: hidden;
+  
+  &:hover {
+    .inner-shadow-hover;
+    cursor: pointer;
+    opacity: 1;
+  }
+
+  .pole {
+    .shadowed;
+    width: 40%;
+    height: 40%;
+    top: -800px;
+    left: -800px;
+    position: relative;
+  }
 }

@@ -12,16 +12,18 @@ var less = require('gulp-less');
 var path = {
   WATCH_HTML: 'src/index.html',
   WATCH_CSS: ['src/css/*.less', 'src/css/**/*.less'],
-  WATCH_IMAGES: 'src/images/*.png',
+  WATCH_IMAGES: ['src/images/*.png', 'src/images/*.jpg'],
+  VENDOR_JS: ['src/js/vendor/*.js', 'src/js/vendor/**/*.js'],
   LESS_STYLES: 'src/css/styles.less',
   MINIFIED_OUT: 'bundle.min.js',
   OUT: 'bundle.js',
   DEST: 'dist',
   DEST_BUILD: 'dist/build',
   DEST_JS: 'dist/js',
+  DEST_JS_VENDOR: 'dist/js/vendor',
   DEST_CSS: 'dist/css',
   DEST_IMAGES: 'dist/images',
-  ENTRY_POINT: './src/js/Game.jsx'
+  ENTRY_POINT: 'src/js/Game.jsx'
 };
 
 // Copy index.html to dist
@@ -32,6 +34,9 @@ gulp.task('copyAssets', function(){
   // Images
   gulp.src(path.WATCH_IMAGES)
     .pipe(gulp.dest(path.DEST_IMAGES));
+  // Vendor JS
+  gulp.src(path.VENDOR_JS)
+    .pipe(gulp.dest(path.DEST_JS_VENDOR));
 });
 
 // Process styles (LESS)
