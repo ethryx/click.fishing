@@ -1,54 +1,79 @@
+@import url(http://fonts.googleapis.com/css?family=Kavoon);
+
+@WIDTH_LEFT: 25%;
+@WIDTH_MIDDLE: 50%;
+@WIDTH_RIGHT: 25%;
+@DEFAULT_PANEL_PADDING: 10px;
+@DEFAULT_BG: rgba(25, 25, 25, 0.7);
+
+.inner-shadow {
+  -moz-box-shadow:    inset 0 0 14px #000000;
+  -webkit-box-shadow: inset 0 0 14px #000000;
+  box-shadow:         inset 0 0 14px #000000;
+}
+
+.default-font {
+  font-family: 'Kavoon', Georgia, serif;
+  font-size: 16px;
+  text-shadow: 0px 0px 4px #000;
+  color: #fff;
+}
+
 html, body {
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
+  overflow: hidden;
 }
 
 #entry-point {
   height: 100%;
+
+  .game-container {
+    .default-font;
+    height: 100%;
+    display: flex;
+    background-color: #666;
+
+    .section {
+      height: 100%;
+      color: #fff;
+
+      &.left-side {
+        flex-basis: @WIDTH_LEFT;
+      }
+
+      &.middle {
+        flex-basis: @WIDTH_MIDDLE;
+      }
+
+      &.right-side {
+        flex-basis: @WIDTH_RIGHT;
+      }
+
+      .section-inner {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        height: 100%;
+
+        .panel {
+          width: 100%;
+
+          .panel-inner {
+            padding: @DEFAULT_PANEL_PADDING;
+          }
+        }
+      }
+
+    }
+  }
+
 }
 
-.game-container {
-  height: 100%;
-  display: flex;
-  background: url(../images/noisy_net.png)
-}
-
-.game-container .section {
-  height: 100%;
-  color: #fff;
-}
-
-.game-container .section.left-side {
-  flex-basis: 25%;
-  background-color: rgba(25, 25, 25, 0.7);
-}
-
-.game-container .section.middle {
-  flex-basis: 50%;
-}
-
-.game-container .section.right-side {
-  flex-basis: 25%;
-  background-color: rgba(25, 25, 25, 0.7);
-}
-
-.panel.stats-panel {
-  height: 50%;
-}
-
-.panel.chat-panel {
-  height: 50%;
-}
-
-.panel.item-panel {
-  height: 100%;
-}
-
-.panel.cookie-panel {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+@import 'components/FishingPanel.less';
+@import 'components/FishListPanel.less';
+@import 'components/TimePanel.less';
+@import 'components/ActionPanel.less';
+@import 'components/InfoPanel.less';

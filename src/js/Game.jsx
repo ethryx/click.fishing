@@ -1,22 +1,30 @@
 var React = require('react');
-var StatsPanel = require('./components/StatsPanel.jsx');
-var CookiePanel = require('./components/CookiePanel.jsx');
-var ChatPanel = require('./components/ChatPanel.jsx');
-var ItemPanel = require('./components/ItemPanel.jsx');
+var FishingPanel = require('./components/FishingPanel.jsx');
+var FishListPanel = require('./components/FishListPanel.jsx');
+var TimePanel = require('./components/TimePanel.jsx');
+var ActionPanel = require('./components/ActionPanel.jsx');
+var InfoPanel = require('./components/InfoPanel.jsx');
 
 var Game = React.createClass({
   render: function() {
     return (
       <div className="game-container">
         <div className="section left-side">
-          <StatsPanel />
-          <ChatPanel />
+          <div className="section-inner">
+            <FishingPanel />
+            <FishListPanel />
+          </div>
         </div>
         <div className="section middle">
-          <CookiePanel />
+          <div className="section-inner">
+            <TimePanel />
+          </div>
         </div>
         <div className="section right-side">
-          <ItemPanel />
+          <div className="section-inner">
+            <ActionPanel />
+            <InfoPanel />
+          </div>
         </div>
       </div>
     );
