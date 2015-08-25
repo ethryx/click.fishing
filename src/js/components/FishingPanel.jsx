@@ -2,37 +2,66 @@ var React = require('react');
 
 var FishingPanel = React.createClass({
 
+  getInitialState: function() {
+    return {
+      numFish: 10
+    };
+  },
+
+  render: function() {
+    var fish = [];
+    for(var i = 0; i < this.state.numFish; i++) {
+        fish.push(<Fish key={i} fishIndex={i} speed={100} />);
+    }
+
+    return (
+      <div className="panel fishing-panel">
+        <div className="panel-inner">
+
+          {fish}
+
+        </div>
+      </div>
+    );
+  }
+
+});
+
+var Fish = React.createClass({
+  getInitialState: function() {
+    return {
+    };
+  },
+
+  animate: function() {
+    var currentLeft = parseInt(this.state.divStyle.left.replace('px', ''));
+    this.setState({
+      divStyle: {
+        top: this.state.divStyle.top,
+        left: (currentLeft + 5) + 'px',
+        zIndex: parseInt(this.props.fishIndex + 1)
+      }
+    });
+    clearInterval(this.animateTimer);
+  },
+
   componentDidMount: function() {
-    // Prevent dragging the image
-    $('.pole').on('dragstart', function(event) { event.preventDefault(); });
+    this.setState({
+      divStyle: {
+        top: Math.round(Math.random() * ($('.fishing-panel').height() - 0) + 0) + 'px',
+        left: '-100px'
+      }
+    });
+    this.animateTimer = setInterval(this.animate, this.props.speed);
   },
 
-  handleMouseMove: function(reactEvent) {
-    var pageX = reactEvent.nativeEvent.pageX;
-    var pageY = reactEvent.nativeEvent.pageY;
-
-    $('.pole').css({
-      top: (pageY - 80) + 'px',
-      left: (pageX - 80) + 'px'
-    });
-  },
-
-  hideFishingPole: function() {
-    $('.pole').css({
-      top: '-800px',
-      left: '-800px'
-    });
+  componentWillUnmount: function() {
+    clearInterval(this.animateTimer);
   },
 
   render: function() {
     return (
-      <div className="panel fishing-panel" onMouseMove={this.handleMouseMove} onMouseLeave={this.hideFishingPole}>
-        <div className="panel-inner">
-
-          <img src="images/pole.png" className="pole"></img>
-
-        </div>
-      </div>
+      <div className="fish" style={this.state.divStyle}></div>
     );
   }
 

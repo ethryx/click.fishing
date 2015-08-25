@@ -33,13 +33,17 @@ var TimePanel = React.createClass({
 
   },
 
-  componentDidMount: function() {
-    this.interval = setInterval(this.positionSunMoon, 1000);
+  _onTimeChange: function() {
     this.positionSunMoon();
   },
 
+  componentDidMount: function() {
+    this.positionSunMoon();
+    TimeStore.addChangeListener(this._onTimeChange);
+  },
+
   componentWillUnmount: function() {
-    clearInterval(this.interval);
+    TimeStore.removeChangeListener(this._onTimeChange);
   },
 
   render: function() {
