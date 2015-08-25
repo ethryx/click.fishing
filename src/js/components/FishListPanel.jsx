@@ -1,4 +1,5 @@
 var React = require('react');
+var GameStore = require('../stores/GameStore');
 
 var FishListPanel = React.createClass({
 
@@ -6,9 +7,19 @@ var FishListPanel = React.createClass({
     return (
       <div className="panel fish-list-panel">
         <div className="panel-inner">
-          FishListPanel
+
         </div>
       </div>
+    );
+  }
+
+});
+
+var Fish = React.createClass({
+
+  render: function() {
+    return (
+      <div></div>
     );
   }
 

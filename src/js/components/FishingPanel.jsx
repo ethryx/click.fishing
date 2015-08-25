@@ -1,17 +1,22 @@
 var React = require('react');
-
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var GameConstants = require('../constants/GameConstants');
 var FishingPanel = React.createClass({
 
   getInitialState: function() {
     return {
-      numFish: 10
+      numFish: 40
     };
+  },
+
+  randomNumber: function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   },
 
   render: function() {
     var fish = [];
     for(var i = 0; i < this.state.numFish; i++) {
-        fish.push(<Fish key={i} fishIndex={i} speed={100} />);
+        fish.push(<SwimmingFish key={i} fishIndex={i} speed={this.randomNumber(25,100)} />);
     }
 
     return (
@@ -27,7 +32,7 @@ var FishingPanel = React.createClass({
 
 });
 
-var Fish = React.createClass({
+var SwimmingFish = React.createClass({
   getInitialState: function() {
     return {
     };
@@ -35,20 +40,38 @@ var Fish = React.createClass({
 
   animate: function() {
     var currentLeft = parseInt(this.state.divStyle.left.replace('px', ''));
+
+    if(currentLeft > $('.fishing-panel').width()) {
+      currentLeft = -100;
+    }
+
     this.setState({
       divStyle: {
         top: this.state.divStyle.top,
         left: (currentLeft + 5) + 'px',
-        zIndex: parseInt(this.props.fishIndex + 1)
+        zIndex: parseInt(this.props.fishIndex + 1),
+        transition: ((currentLeft === -100) ? 'none' : 'all 0.1s ease')
       }
     });
-    clearInterval(this.animateTimer);
+  },
+
+  randomNumber: function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  },
+
+  onClick: function() {
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.GAME_CLICK_FISH
+    });
   },
 
   componentDidMount: function() {
+    var topMost = 0 - (34 * this.props.fishIndex);
+    var bottomMost = $('.fishing-panel').height() + topMost;
+
     this.setState({
       divStyle: {
-        top: Math.round(Math.random() * ($('.fishing-panel').height() - 0) + 0) + 'px',
+        top: this.randomNumber(topMost, bottomMost) + 'px',
         left: '-100px'
       }
     });
@@ -61,7 +84,7 @@ var Fish = React.createClass({
 
   render: function() {
     return (
-      <div className="fish" style={this.state.divStyle}></div>
+      <div className="fish" style={this.state.divStyle} onClick={this.onClick}></div>
     );
   }
 
