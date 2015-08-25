@@ -22,7 +22,16 @@ var GameStore = assign({}, EventEmitter.prototype, {
   },
 
   getTotalFish: function() {
-    return savedData.fish.length;
+    var totalFish = 0;
+    savedData.fish.forEach(function(fishType) {
+      totalFish += fishType.amount;
+    });
+
+    return totalFish;
+  },
+
+  getAllFish: function() {
+    return savedData.fish;
   },
 
   saveToBrowser: function() {
@@ -30,12 +39,25 @@ var GameStore = assign({}, EventEmitter.prototype, {
   },
 
   captureFish: function() {
-    savedData.fish.push({
-      type: GameConstants.FISH_TYPES.STANDARD
-    });
+    var alreadyHaveType = false;
+
+    for(var i = 0; i < savedData.fish.length; i++) {
+      if(savedData.fish[i].type === GameConstants.FISH_TYPES.STANDARD) {
+        savedData.fish[i].amount++;
+        alreadyHaveType = true;
+        break;
+      }
+    }
+
+    if(!alreadyHaveType) {
+      savedData.fish.push({
+        type: GameConstants.FISH_TYPES.STANDARD,
+        amount: 1
+      });
+    }
 
     console.log('Got a fish!');
-    
+
     this.saveToBrowser();
     this.emitChange();
   },

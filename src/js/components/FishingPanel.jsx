@@ -35,13 +35,14 @@ var FishingPanel = React.createClass({
 var SwimmingFish = React.createClass({
   getInitialState: function() {
     return {
+      className: 'fish'
     };
   },
 
-  animate: function() {
+  animate: function(resetPosition) {
     var currentLeft = parseInt(this.state.divStyle.left.replace('px', ''));
 
-    if(currentLeft > $('.fishing-panel').width()) {
+    if( (typeof resetPosition === 'boolean' && resetPosition === true) || currentLeft > $('.fishing-panel').width()) {
       currentLeft = -100;
     }
 
@@ -65,6 +66,18 @@ var SwimmingFish = React.createClass({
     });
   },
 
+  onMouseDown: function() {
+    this.setState({
+      className: 'fish mouse-down'
+    });
+  },
+
+  onMouseUp: function() {
+    this.setState({
+      className: 'fish mouse-up'
+    });
+  },
+
   componentDidMount: function() {
     var topMost = 0 - (34 * this.props.fishIndex);
     var bottomMost = $('.fishing-panel').height() + topMost;
@@ -84,7 +97,7 @@ var SwimmingFish = React.createClass({
 
   render: function() {
     return (
-      <div className="fish" style={this.state.divStyle} onClick={this.onClick}></div>
+      <div className={this.state.className} style={this.state.divStyle} onClick={this.onClick} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}></div>
     );
   }
 
