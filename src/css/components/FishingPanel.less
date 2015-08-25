@@ -1,11 +1,30 @@
+@-webkit-keyframes FishBackgroundAnimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes FishBackgroundAnimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes FishBackgroundAnimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
 .fishing-panel {
   .inner-shadow;
   flex-basis: 30%;
-  background: url(../images/water_texture.jpg);
-  background-size: cover;
   opacity: 0.8;
   overflow: hidden;
-  
+  background: linear-gradient(270deg, #32bde6, #51c9ec, #0ea3ce, #00c1f9);
+  background-size: 800% 800%;
+  -webkit-animation: FishBackgroundAnimation 30s ease infinite;
+  -moz-animation: FishBackgroundAnimation 30s ease infinite;
+  animation: FishBackgroundAnimation 30s ease infinite;
+
   &:hover {
     .inner-shadow-hover;
     cursor: pointer;
