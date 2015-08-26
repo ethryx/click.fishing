@@ -12,4 +12,4 @@ It uses **gulp** to build, watch and transform the files for both development an
 
 After running gulp, you can access it at:
 
-http://localhost:3000/
+[http://localhost:3000/](http://localhost:3000/)
