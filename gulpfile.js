@@ -102,6 +102,6 @@ gulp.task('startServer', function() {
   });
 });
 
-gulp.task('production', ['buildJs', 'copyAssets']);
+gulp.task('production', ['buildJs', 'copyAssets', 'startServer']);
 
 gulp.task('default', ['copyAssets', 'less', 'startServer', 'watch']);
