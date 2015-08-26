@@ -19,14 +19,31 @@ var FishingPanel = React.createClass({
     var newName = prompt('What is your name?');
 
     if(newName) {
-      // Set a new name here..
+      AppDispatcher.handleViewAction({
+        actionType: GameConstants.GAME_SET_NAME,
+        newName: newName
+      });
     }
+  },
+
+  onGameDataChange: function() {
+    this.setState({
+      playerName: GameStore.getPlayerName()
+    });
+  },
+
+  componentDidMount: function() {
+    GameStore.addChangeListener(this.onGameDataChange);
+  },
+
+  componentWillUnmount: function() {
+    GameStore.removeChangeListener(this.onGameDataChange);
   },
 
   render: function() {
     var fish = [];
     for(var i = 0; i < this.state.numFish; i++) {
-        fish.push(<SwimmingFish key={i} fishIndex={i} speed={this.randomNumber(25,80)} direction={this.randomNumber(0,1)} />);
+        fish.push(<SwimmingFish key={i} fishIndex={i} />);
     }
 
     return (
@@ -34,7 +51,7 @@ var FishingPanel = React.createClass({
         <div className="panel-inner">
 
           <div className="player-name" onClick={this.onClick}>
-            Mike's Fish
+            {this.state.playerName + "'s Fish"}
           </div>
 
           {fish}
@@ -48,13 +65,16 @@ var FishingPanel = React.createClass({
 
 var SwimmingFish = React.createClass({
   getInitialState: function() {
+    var _direction = this.randomNumber(0, 1);
     return {
-      className: this.getBaseClassName()
+      className: ((_direction === 0) ? 'fish' : 'fish reverse'),
+      speed: this.randomNumber(25, 80),
+      direction: _direction
     };
   },
 
   getBaseClassName: function() {
-    if(this.props.direction === 0) {
+    if(this.state.direction === 0) {
       return 'fish';
     } else {
       return 'fish reverse';
@@ -72,22 +92,22 @@ var SwimmingFish = React.createClass({
   animate: function(resetPosition) {
     var currentLeft = parseInt(this.state.divStyle.left.replace('px', ''));
 
-    if(this.props.direction === 0 && currentLeft > $('.fishing-panel').width()) {
+    if(this.state.direction === 0 && currentLeft > $('.fishing-panel').width()) {
       this.resetPosition();
       return;
-    } else if(this.props.direction === 1 && currentLeft < -100) {
+    } else if(this.state.direction === 1 && currentLeft < -100) {
       this.resetPosition();
       return;
     }
 
     if(typeof resetPosition === 'boolean' && resetPosition === true) {
-      currentLeft = ((this.props.direction === 0) ? -100 : $('.fishing-panel').width());
+      currentLeft = ((this.state.direction === 0) ? -100 : $('.fishing-panel').width());
     }
 
     this.setState({
       divStyle: {
         top: this.state.divStyle.top,
-        left: ((this.props.direction === 0) ? (currentLeft + 5) : (currentLeft - 5)) + 'px',
+        left: ((this.state.direction === 0) ? (currentLeft + 5) : (currentLeft - 5)) + 'px',
         zIndex: parseInt(this.props.fishIndex + 1),
         transition: ((currentLeft === -100) ? 'none' : 'all 0.1s ease'),
         opacity: this.state.divStyle.opacity
@@ -136,7 +156,7 @@ var SwimmingFish = React.createClass({
     this.setState({
       divStyle: {
         top: this.randomNumber(topMost, bottomMost) + 'px',
-        left: ((this.props.direction === 0) ? '-100px' : $('.fishing-panel').width() + 'px'),
+        left: ((this.state.direction === 0) ? '-100px' : $('.fishing-panel').width() + 'px'),
         opacity: ( this.randomNumber(10, 50) * 0.01)
       }
     });
@@ -144,7 +164,7 @@ var SwimmingFish = React.createClass({
 
   componentDidMount: function() {
     this.reposition();
-    this.animateTimer = setInterval(this.animate, this.props.speed);
+    this.animateTimer = setInterval(this.animate, this.state.speed);
   },
 
   componentWillUnmount: function() {

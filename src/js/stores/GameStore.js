@@ -34,6 +34,20 @@ var GameStore = assign({}, EventEmitter.prototype, {
     return savedData.fish;
   },
 
+  getPlayerName: function() {
+    if(savedData.playerName) {
+      return savedData.playerName;
+    } else {
+      return 'Player';
+    }
+  },
+
+  setPlayerName: function(newName) {
+    savedData.playerName = newName;
+    this.saveToBrowser();
+    this.emitChange();
+  },
+
   saveToBrowser: function() {
     window.localStorage.gameData = JSON.stringify(savedData);
   },
@@ -76,6 +90,9 @@ var GameStore = assign({}, EventEmitter.prototype, {
     switch(action.actionType) {
       case GameConstants.GAME_CLICK_FISH:
         GameStore.captureFish();
+        break;
+      case GameConstants.GAME_SET_NAME:
+        GameStore.setPlayerName(action.newName);
         break;
     }
 
