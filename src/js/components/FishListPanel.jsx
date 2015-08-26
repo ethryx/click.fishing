@@ -54,11 +54,20 @@ var Fish = React.createClass({
     }
   },
 
+  getFishImage: function() {
+    switch(this.props.type) {
+      case GameConstants.FISH_TYPES.STANDARD:
+        return 'images/standard_fish.png';
+      default:
+        return 'images/standard_fish.png';
+    }
+  },
+
   render: function() {
     return (
       <div className="fish">
         <div className="picture">
-
+          <img src={this.getFishImage()} />
         </div>
         <div className="information">
           <div className="fish-type">{this.getFishTypeString()}</div>

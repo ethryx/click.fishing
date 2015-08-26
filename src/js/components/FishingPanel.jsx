@@ -1,11 +1,13 @@
 var React = require('react');
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var GameConstants = require('../constants/GameConstants');
+var GameStore = require('../stores/GameStore');
 var FishingPanel = React.createClass({
 
   getInitialState: function() {
     return {
-      numFish: 10
+      numFish: 10,
+      playerName: GameStore.getPlayerName()
     };
   },
 
@@ -13,15 +15,27 @@ var FishingPanel = React.createClass({
     return Math.floor(Math.random() * (max - min + 1) + min);
   },
 
+  onClick: function() {
+    var newName = prompt('What is your name?');
+
+    if(newName) {
+      // Set a new name here..
+    }
+  },
+
   render: function() {
     var fish = [];
     for(var i = 0; i < this.state.numFish; i++) {
-        fish.push(<SwimmingFish key={i} fishIndex={i} speed={this.randomNumber(25,80)} />);
+        fish.push(<SwimmingFish key={i} fishIndex={i} speed={this.randomNumber(25,80)} direction={this.randomNumber(0,1)} />);
     }
 
     return (
       <div className="panel fishing-panel">
         <div className="panel-inner">
+
+          <div className="player-name" onClick={this.onClick}>
+            Mike's Fish
+          </div>
 
           {fish}
 
@@ -35,36 +49,48 @@ var FishingPanel = React.createClass({
 var SwimmingFish = React.createClass({
   getInitialState: function() {
     return {
-      className: 'fish'
+      className: this.getBaseClassName()
     };
   },
 
+  getBaseClassName: function() {
+    if(this.props.direction === 0) {
+      return 'fish';
+    } else {
+      return 'fish reverse';
+    }
+  },
+
   resetPosition: function() {
-    this.assignRandomTop();
+    this.reposition();
     this.animate(true);
     this.setState({
-      className: 'fish'
+      className: this.getBaseClassName()
     });
   },
 
   animate: function(resetPosition) {
     var currentLeft = parseInt(this.state.divStyle.left.replace('px', ''));
 
-    if(currentLeft > $('.fishing-panel').width()) {
+    if(this.props.direction === 0 && currentLeft > $('.fishing-panel').width()) {
+      this.resetPosition();
+      return;
+    } else if(this.props.direction === 1 && currentLeft < -100) {
       this.resetPosition();
       return;
     }
 
     if(typeof resetPosition === 'boolean' && resetPosition === true) {
-      currentLeft = -100;
+      currentLeft = ((this.props.direction === 0) ? -100 : $('.fishing-panel').width());
     }
 
     this.setState({
       divStyle: {
         top: this.state.divStyle.top,
-        left: (currentLeft + 5) + 'px',
+        left: ((this.props.direction === 0) ? (currentLeft + 5) : (currentLeft - 5)) + 'px',
         zIndex: parseInt(this.props.fishIndex + 1),
-        transition: ((currentLeft === -100) ? 'none' : 'all 0.1s ease')
+        transition: ((currentLeft === -100) ? 'none' : 'all 0.1s ease'),
+        opacity: this.state.divStyle.opacity
       }
     });
   },
@@ -75,25 +101,25 @@ var SwimmingFish = React.createClass({
 
   onMouseOver: function() {
     this.setState({
-      className: 'fish mouse-hover'
+      className: this.getBaseClassName() + ' mouse-hover'
     });
   },
 
   onMouseOut: function() {
     this.setState({
-      className: 'fish'
+      className: this.getBaseClassName()
     });
   },
 
   onMouseDown: function() {
     this.setState({
-      className: 'fish mouse-down'
+      className: this.getBaseClassName() + ' mouse-down'
     });
   },
 
   onMouseUp: function() {
     this.setState({
-      className: 'fish mouse-up'
+      className: this.getBaseClassName() + ' mouse-up'
     });
 
     AppDispatcher.handleViewAction({
@@ -103,20 +129,21 @@ var SwimmingFish = React.createClass({
     setTimeout(this.resetPosition, 100);
   },
 
-  assignRandomTop: function() {
+  reposition: function() {
     var topMost = 0 - (34 * this.props.fishIndex);
     var bottomMost = ($('.fishing-panel').height() + topMost) - 50;
 
     this.setState({
       divStyle: {
         top: this.randomNumber(topMost, bottomMost) + 'px',
-        left: '-100px'
+        left: ((this.props.direction === 0) ? '-100px' : $('.fishing-panel').width() + 'px'),
+        opacity: ( this.randomNumber(10, 50) * 0.01)
       }
     });
   },
 
   componentDidMount: function() {
-    this.assignRandomTop();
+    this.reposition();
     this.animateTimer = setInterval(this.animate, this.props.speed);
   },
 
