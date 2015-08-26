@@ -18,7 +18,7 @@ var path = {
   MINIFIED_OUT: 'bundle.min.js',
   OUT: 'bundle.js',
   DEST: 'dist',
-  DEST_BUILD: 'dist/build',
+  DEST_BUILD: 'dist/js',
   DEST_JS: 'dist/js',
   DEST_JS_VENDOR: 'dist/js/vendor',
   DEST_CSS: 'dist/css',
@@ -80,14 +80,15 @@ gulp.task('buildJs', function(){
     transform: [reactify]
   })
     .bundle()
-    .pipe(source(path.MINIFIED_OUT))
-    .pipe(streamify(uglify(path.MINIFIED_OUT)))
+    .pipe(source(path.OUT))
+    //.pipe(streamify(uglify(path.MINIFIED_OUT)))
+    .pipe(streamify(uglify()))
     .pipe(gulp.dest(path.DEST_BUILD));
 });
 
 // Replace html
 gulp.task('replaceHTML', function(){
-  gulp.src(path.HTML)
+  gulp.src(path.WATCH_HTML)
     .pipe(htmlreplace({
       'js': 'build/' + path.MINIFIED_OUT
     }))
@@ -101,6 +102,6 @@ gulp.task('startServer', function() {
   });
 });
 
-gulp.task('production', ['replaceHTML', 'buildJs']);
+gulp.task('production', ['buildJs', 'copyAssets']);
 
 gulp.task('default', ['copyAssets', 'less', 'startServer', 'watch']);
