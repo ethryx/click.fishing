@@ -6,7 +6,9 @@ var assign = require('object-assign');
 var CHANGE_EVENT = 'change';
 
 var savedData = {
-  fish: []
+  playerName: 'Player',
+  fish: [],
+  upgrades: []
 };
 
 // Load data from cache?
@@ -40,6 +42,28 @@ var GameStore = assign({}, EventEmitter.prototype, {
     } else {
       return 'Player';
     }
+  },
+
+  getUpgradeCount: function(upgradeId) {
+    if(typeof savedData.upgrades === 'undefined') {
+      savedData.upgrades = [];
+    }
+
+    for(var i = 0; i < savedData.upgrades.length; i++) {
+      if(savedData.upgrades[i].ID === upgradeId) {
+        return savedData.upgrades[i].count;
+      }
+    }
+
+    return 0;
+  },
+
+  getAvailableUpgrades: function() {
+    var upgrades = GameConstants.UPGRADES;
+    upgrades.forEach(function(upgrade) {
+      upgrade.OWNED = this.getUpgradeCount(upgrade.ID);
+    }.bind(this));
+    return upgrades;
   },
 
   setPlayerName: function(newName) {

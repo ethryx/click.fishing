@@ -4,7 +4,7 @@ var FishListPanel = require('./components/FishListPanel.jsx');
 var TimePanel = require('./components/TimePanel.jsx');
 var MainPanel = require('./components/MainPanel.jsx');
 var ActionPanel = require('./components/ActionPanel.jsx');
-var InfoPanel = require('./components/InfoPanel.jsx');
+var UpgradePanel = require('./components/UpgradePanel.jsx');
 
 var Game = React.createClass({
   componentDidMount: function() {
@@ -29,7 +29,7 @@ var Game = React.createClass({
         <div className="section right-side">
           <div className="section-inner">
             <ActionPanel />
-            <InfoPanel />
+            <UpgradePanel />
           </div>
         </div>
       </div>
