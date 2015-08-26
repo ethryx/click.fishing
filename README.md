@@ -1,6 +1,6 @@
-# Multiplayer Cookie Clicker
+# Fishing "Cookie Clicker"
 
-This is a multiplayer cookie clicker built with React.js.
+This is a "cookie clicker" with weekly tournaments built with React / Flux.
 
 It uses **gulp** to build, watch and transform the files for both development and production.
 
@@ -10,4 +10,6 @@ It uses **gulp** to build, watch and transform the files for both development an
 - `npm install -g gulp`
 - `gulp`
 
-Client located at: `/dist/index.html` (after running gulp)
+After running gulp, you can access it at:
+
+http://localhost:3000/
