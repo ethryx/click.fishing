@@ -5,7 +5,7 @@ var FishingPanel = React.createClass({
 
   getInitialState: function() {
     return {
-      numFish: 40
+      numFish: 10
     };
   },
 
@@ -16,7 +16,7 @@ var FishingPanel = React.createClass({
   render: function() {
     var fish = [];
     for(var i = 0; i < this.state.numFish; i++) {
-        fish.push(<SwimmingFish key={i} fishIndex={i} speed={this.randomNumber(25,100)} />);
+        fish.push(<SwimmingFish key={i} fishIndex={i} speed={this.randomNumber(25,80)} />);
     }
 
     return (
@@ -39,10 +39,23 @@ var SwimmingFish = React.createClass({
     };
   },
 
+  resetPosition: function() {
+    this.assignRandomTop();
+    this.animate(true);
+    this.setState({
+      className: 'fish'
+    });
+  },
+
   animate: function(resetPosition) {
     var currentLeft = parseInt(this.state.divStyle.left.replace('px', ''));
 
-    if( (typeof resetPosition === 'boolean' && resetPosition === true) || currentLeft > $('.fishing-panel').width()) {
+    if(currentLeft > $('.fishing-panel').width()) {
+      this.resetPosition();
+      return;
+    }
+
+    if(typeof resetPosition === 'boolean' && resetPosition === true) {
       currentLeft = -100;
     }
 
@@ -60,9 +73,15 @@ var SwimmingFish = React.createClass({
     return Math.floor(Math.random() * (max - min + 1) + min);
   },
 
-  onClick: function() {
-    AppDispatcher.handleViewAction({
-      actionType: GameConstants.GAME_CLICK_FISH
+  onMouseOver: function() {
+    this.setState({
+      className: 'fish mouse-hover'
+    });
+  },
+
+  onMouseOut: function() {
+    this.setState({
+      className: 'fish'
     });
   },
 
@@ -76,11 +95,17 @@ var SwimmingFish = React.createClass({
     this.setState({
       className: 'fish mouse-up'
     });
+
+    AppDispatcher.handleViewAction({
+      actionType: GameConstants.GAME_CLICK_FISH
+    });
+
+    setTimeout(this.resetPosition, 100);
   },
 
-  componentDidMount: function() {
+  assignRandomTop: function() {
     var topMost = 0 - (34 * this.props.fishIndex);
-    var bottomMost = $('.fishing-panel').height() + topMost;
+    var bottomMost = ($('.fishing-panel').height() + topMost) - 50;
 
     this.setState({
       divStyle: {
@@ -88,6 +113,10 @@ var SwimmingFish = React.createClass({
         left: '-100px'
       }
     });
+  },
+
+  componentDidMount: function() {
+    this.assignRandomTop();
     this.animateTimer = setInterval(this.animate, this.props.speed);
   },
 
@@ -97,7 +126,7 @@ var SwimmingFish = React.createClass({
 
   render: function() {
     return (
-      <div className={this.state.className} style={this.state.divStyle} onClick={this.onClick} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}></div>
+      <div className={this.state.className} style={this.state.divStyle} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}></div>
     );
   }
 
