@@ -48,7 +48,7 @@ var Fish = React.createClass({
   getFishTypeString: function() {
     switch(this.props.type) {
       case GameConstants.FISH_TYPES.STANDARD:
-        return 'Regular Fish';
+        return 'Black Fish';
       default:
         return 'Unknown Fish';
     }

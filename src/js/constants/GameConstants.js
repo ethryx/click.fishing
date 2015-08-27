@@ -6,6 +6,10 @@ module.exports = {
     STANDARD: 0
   },
 
+  FISH_VALUES: {
+    STANDARD: 1
+  },
+
   UPGRADES: [
     {
       ID: "FISHING_NET",

@@ -66,6 +66,20 @@ var GameStore = assign({}, EventEmitter.prototype, {
     return upgrades;
   },
 
+  getNetWorth: function() {
+    var worth = 0;
+
+    savedData.fish.forEach(function(fish) {
+      switch(fish.type) {
+        case GameConstants.FISH_TYPES.STANDARD:
+          worth += (GameConstants.FISH_VALUES.STANDARD * fish.amount);
+          break;
+      }
+    });
+
+    return worth;
+  },
+
   setPlayerName: function(newName) {
     savedData.playerName = newName;
     this.saveToBrowser();
@@ -93,8 +107,6 @@ var GameStore = assign({}, EventEmitter.prototype, {
         amount: 1
       });
     }
-
-    console.log('Got a fish!');
 
     this.saveToBrowser();
     this.emitChange();

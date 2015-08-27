@@ -3,7 +3,7 @@ var FishingPanel = require('./components/FishingPanel.jsx');
 var FishListPanel = require('./components/FishListPanel.jsx');
 var TimePanel = require('./components/TimePanel.jsx');
 var MainPanel = require('./components/MainPanel.jsx');
-var ActionPanel = require('./components/ActionPanel.jsx');
+var NetWorthPanel = require('./components/NetWorthPanel.jsx');
 var UpgradePanel = require('./components/UpgradePanel.jsx');
 
 var Game = React.createClass({
@@ -28,7 +28,7 @@ var Game = React.createClass({
         </div>
         <div className="section right-side">
           <div className="section-inner">
-            <ActionPanel />
+            <NetWorthPanel />
             <UpgradePanel />
           </div>
         </div>

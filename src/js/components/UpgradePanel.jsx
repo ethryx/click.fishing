@@ -1,7 +1,7 @@
 var React = require('react');
 var GameStore = require('../stores/GameStore');
 
-var InfoPanel = React.createClass({
+var UpgradePanel = React.createClass({
 
   getInitialState: function() {
     return {
@@ -87,4 +87,4 @@ var Tooltip = React.createClass({
 
 });
 
-module.exports = InfoPanel;
+module.exports = UpgradePanel;
