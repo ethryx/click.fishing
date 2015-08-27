@@ -47,8 +47,8 @@ var Fish = React.createClass({
 
   getFishTypeString: function() {
     switch(this.props.type) {
-      case GameConstants.FISH_TYPES.STANDARD:
-        return 'Black Fish';
+      case GameConstants.FISH_TYPES.BLACK:
+        return 'Black Fish ($' + GameConstants.FISH_VALUES.BLACK + ')';
       default:
         return 'Unknown Fish';
     }
@@ -56,7 +56,7 @@ var Fish = React.createClass({
 
   getFishImage: function() {
     switch(this.props.type) {
-      case GameConstants.FISH_TYPES.STANDARD:
+      case GameConstants.FISH_TYPES.BLACK:
         return 'images/standard_fish.png';
       default:
         return 'images/standard_fish.png';

@@ -7,9 +7,28 @@
     z-index: 99999;
     opacity: 0;
     transition: opacity 0.5s ease;
-    
+    background-color: rgba(0,0,0,0.7);
+    width: 300px;
+    min-height: 75px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px solid #344C69;
+    box-shadow: 0 0 20px #000;
+
     &.visible {
       opacity: 1;
+    }
+
+    .tooltip-inner {
+      .tt-name {
+        font-size: 20px;
+      }
+      .tt-owned {
+        font-size: 12px;
+      }
+      .tt-desc {
+        padding-top: 10px;
+      }
     }
   }
 

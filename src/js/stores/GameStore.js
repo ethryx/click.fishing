@@ -71,8 +71,8 @@ var GameStore = assign({}, EventEmitter.prototype, {
 
     savedData.fish.forEach(function(fish) {
       switch(fish.type) {
-        case GameConstants.FISH_TYPES.STANDARD:
-          worth += (GameConstants.FISH_VALUES.STANDARD * fish.amount);
+        case GameConstants.FISH_TYPES.BLACK:
+          worth += (GameConstants.FISH_VALUES.BLACK * fish.amount);
           break;
       }
     });
@@ -94,7 +94,7 @@ var GameStore = assign({}, EventEmitter.prototype, {
     var alreadyHaveType = false;
 
     for(var i = 0; i < savedData.fish.length; i++) {
-      if(savedData.fish[i].type === GameConstants.FISH_TYPES.STANDARD) {
+      if(savedData.fish[i].type === GameConstants.FISH_TYPES.BLACK) {
         savedData.fish[i].amount++;
         alreadyHaveType = true;
         break;
@@ -103,13 +103,55 @@ var GameStore = assign({}, EventEmitter.prototype, {
 
     if(!alreadyHaveType) {
       savedData.fish.push({
-        type: GameConstants.FISH_TYPES.STANDARD,
+        type: GameConstants.FISH_TYPES.BLACK,
         amount: 1
       });
     }
 
     this.saveToBrowser();
     this.emitChange();
+  },
+
+  /**
+   * Attempt to pay for something with fish (least to greatest value)
+   * @param  {int} amount The cost of what you want to pay for
+   * @return {bool}       Whether or not the payment went through
+   */
+  pay: function(amount) {
+
+  },
+
+  /**
+   * Attempt to purchase an upgrade
+   * @param  {string} upgradeId The upgrade identifier from GameConstants
+   */
+  purchaseUpgrade: function(upgradeId) {
+    var havePurchasedBefore = false;
+    var purchaseSuccessful = true;
+
+    if(typeof savedData.upgrades === 'undefined') {
+      savedData.upgrades = [];
+    }
+
+    for(var i = 0; i < savedData.upgrades.length; i++) {
+      if(savedData.upgrades[i].ID === upgradeId) {
+        havePurchasedBefore = true;
+        savedData.upgrades[i].count++;
+        break;
+      }
+    }
+
+    if(!havePurchasedBefore) {
+      savedData.upgrades.push({
+        ID: upgradeId,
+        count: 1
+      });
+    }
+
+    if(purchaseSuccessful) {
+      this.saveToBrowser();
+      this.emitChange();
+    }
   },
 
   addChangeListener: function(callback) {
@@ -129,6 +171,9 @@ var GameStore = assign({}, EventEmitter.prototype, {
         break;
       case GameConstants.GAME_SET_NAME:
         GameStore.setPlayerName(action.newName);
+        break;
+      case GameConstants.GAME_PURCHASE_UPGRADE:
+        GameStore.purchaseUpgrade(action.upgradeId);
         break;
     }
 
