@@ -13,6 +13,7 @@ var path = {
   WATCH_HTML: 'src/index.html',
   WATCH_CSS: ['src/css/*.less', 'src/css/**/*.less'],
   WATCH_IMAGES: ['src/images/*.png', 'src/images/*.jpg'],
+  WATCH_FONTS: 'src/fonts/*.woff2',
   VENDOR_JS: ['src/js/vendor/*.js', 'src/js/vendor/**/*.js'],
   LESS_STYLES: 'src/css/styles.less',
   MINIFIED_OUT: 'bundle.min.js',
@@ -23,6 +24,7 @@ var path = {
   DEST_JS_VENDOR: 'dist/js/vendor',
   DEST_CSS: 'dist/css',
   DEST_IMAGES: 'dist/images',
+  DEST_FONTS: 'dist/fonts',
   ENTRY_POINT: 'src/js/Game.jsx'
 };
 
@@ -34,6 +36,9 @@ gulp.task('copyAssets', function(){
   // Images
   gulp.src(path.WATCH_IMAGES)
     .pipe(gulp.dest(path.DEST_IMAGES));
+  // Fonts
+  gulp.src(path.WATCH_FONTS)
+    .pipe(gulp.dest(path.DEST_FONTS));
   // Vendor JS
   gulp.src(path.VENDOR_JS)
     .pipe(gulp.dest(path.DEST_JS_VENDOR));
@@ -54,6 +59,7 @@ gulp.task('watch', function() {
   gulp.watch(path.WATCH_HTML, ['copyAssets']);
   gulp.watch(path.WATCH_CSS, ['less']);
   gulp.watch(path.WATCH_IMAGES, ['copyAssets']);
+  gulp.watch(path.WATCH_FONTS, ['copyAssets']);
 
   var watcher = watchify(browserify({
     entries: [path.ENTRY_POINT],
@@ -63,7 +69,7 @@ gulp.task('watch', function() {
   }));
 
   return watcher.on('update', function () {
-    watcher.bundle()
+    watcher.bundle().on('error', function(err) { console.log(err.message); })
       .pipe(source(path.OUT))
       .pipe(gulp.dest(path.DEST_JS));
       console.log('JSX Recompiled!');

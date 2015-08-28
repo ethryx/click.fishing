@@ -7,14 +7,27 @@ var UpgradePanel = React.createClass({
 
   getInitialState: function() {
     return {
-      availableUpgrades: GameStore.getAvailableUpgrades()
+      availableUpgrades: GameStore.getAvailableUpgrades(),
+      netWorth: GameStore.getNetWorth()
     };
   },
 
   onGameUpdate: function() {
     this.setState({
-      availableUpgrades: GameStore.getAvailableUpgrades()
+      availableUpgrades: GameStore.getAvailableUpgrades(),
+      netWorth: GameStore.getNetWorth()
     });
+  },
+
+  isUpgradeAvail: function(upgradeIndex) {
+    var netWorth = this.state.netWorth;
+    var upgradeCost = this.state.availableUpgrades[upgradeIndex].COST;
+
+    if(upgradeCost > netWorth) {
+      return false;
+    }
+
+    return true;
   },
 
   componentDidMount: function() {
@@ -29,7 +42,7 @@ var UpgradePanel = React.createClass({
     var upgradeComponents = [];
     for(var i = 0; i < this.state.availableUpgrades.length; i++) {
       upgradeComponents.push(
-        <Upgrade key={i} upgradeId={this.state.availableUpgrades[i].ID} upgradeName={this.state.availableUpgrades[i].NAME} upgradeCount={this.state.availableUpgrades[i].OWNED} upgradeDescription={this.state.availableUpgrades[i].DESC} />
+        <Upgrade key={i} upgradeId={this.state.availableUpgrades[i].ID} upgradeAvail={this.isUpgradeAvail(i)} upgradeName={this.state.availableUpgrades[i].NAME} upgradeCount={this.state.availableUpgrades[i].OWNED} upgradeDescription={this.state.availableUpgrades[i].DESC} upgradeCost={this.state.availableUpgrades[i].COST} />
       );
     }
 
@@ -72,12 +85,11 @@ var Upgrade = React.createClass({
   },
 
   getToolTipStyles: function() {
-    var toolTipFixedWidth = 300 + 20; // Base width + 10px padding on both sides
+    var toolTipFixedWidth = 300 + 20 + 5; // Base width + 10px padding on both sides + offset
     var toolTipTop = 65;
 
     return {
-      left: ($(window).width() - $('.upgrade-panel').width() - toolTipFixedWidth) + 'px',
-      top: toolTipTop + (this.props.key * 90) + 'px'
+      left: ($(window).width() - $('.upgrade-panel').width() - toolTipFixedWidth) + 'px'
     };
   },
 
@@ -88,10 +100,12 @@ var Upgrade = React.createClass({
       ttClassName += ' visible';
     }
 
+    var className = 'upgrade' + ((this.props.upgradeAvail === true) ? '' : ' unavail');
+
     return (
-      <div className="upgrade" onClick={this.onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <div className={className} onClick={this.onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <div className={ttClassName} style={this.getToolTipStyles()}>
-          <Tooltip name={this.props.upgradeName} owned={this.props.upgradeCount} desc={this.props.upgradeDescription}/>
+          <Tooltip name={this.props.upgradeName} owned={this.props.upgradeCount} desc={this.props.upgradeDescription} cost={this.props.upgradeCost} />
         </div>
         <div className="name">{this.props.upgradeName}</div>
         <div className="quantity">You have <strong>{this.props.upgradeCount}</strong> of these.</div>
@@ -113,6 +127,7 @@ var Tooltip = React.createClass({
         <div className="tt-name">{this.props.name}</div>
         <div className="tt-owned">You have {this.props.owned} of these.</div>
         <div className="tt-desc">{this.props.desc}</div>
+        <div className="tt-cost">This upgrade costs ${this.props.cost}.</div>
       </div>
     );
   }

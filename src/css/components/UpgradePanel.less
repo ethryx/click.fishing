@@ -5,7 +5,6 @@
   .tooltip {
     position: absolute;
     z-index: 99999;
-    opacity: 0;
     transition: opacity 0.5s ease;
     background-color: rgba(0,0,0,0.7);
     width: 300px;
@@ -14,9 +13,10 @@
     border-radius: 10px;
     border: 3px solid #344C69;
     box-shadow: 0 0 20px #000;
+    display: none;
 
     &.visible {
-      opacity: 1;
+      display: block;
     }
 
     .tooltip-inner {
@@ -28,6 +28,12 @@
       }
       .tt-desc {
         padding-top: 10px;
+        font-size: 15px;
+      }
+      .tt-cost {
+        padding-top: 10px;
+        font-size: 12px;
+        color: #aa0;
       }
     }
   }
@@ -44,7 +50,10 @@
       cursor: pointer;
       background-color: rgba(44, 129, 179, 0.9);
       box-shadow: 0 0 12px #219BDC;
-      
+    }
+
+    &.unavail {
+      opacity: 0.4;
     }
 
     .name {

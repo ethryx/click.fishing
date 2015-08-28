@@ -32,6 +32,16 @@ var GameStore = assign({}, EventEmitter.prototype, {
     return totalFish;
   },
 
+  getTotalFishByType: function(fishType) {
+    var totalFish = 0;
+    savedData.fish.forEach(function(fish) {
+      if(fish.type === fishType) {
+        totalFish += fish.amount;
+      }
+    });
+    return totalFish;
+  },
+
   getAllFish: function() {
     return savedData.fish;
   },
@@ -56,6 +66,16 @@ var GameStore = assign({}, EventEmitter.prototype, {
     }
 
     return 0;
+  },
+
+  getUpgradeCost: function(upgradeId) {
+    for(var i = 0; i < GameConstants.UPGRADES.length; i++) {
+      if(GameConstants.UPGRADES[i].ID === upgradeId) {
+        return GameConstants.UPGRADES[i].COST;
+      }
+    }
+
+    return null;
   },
 
   getAvailableUpgrades: function() {
@@ -112,13 +132,41 @@ var GameStore = assign({}, EventEmitter.prototype, {
     this.emitChange();
   },
 
+  removeFishByType: function(fishType, amount) {
+    for(var i = 0; i < savedData.fish.length; i++) {
+      if(savedData.fish[i].type === fishType) {
+        savedData.fish[i].amount -= amount;
+        break;
+      }
+    }
+  },
+
   /**
    * Attempt to pay for something with fish (least to greatest value)
    * @param  {int} amount The cost of what you want to pay for
    * @return {bool}       Whether or not the payment went through
    */
   pay: function(amount) {
+    var currentNetWorth = this.getNetWorth();
 
+    // Can the user afford it?
+    if(amount > currentNetWorth) {
+      return false;
+    }
+
+    // They can, so let's set how much they owe..
+    var owe = amount;
+
+    // And now let's try to pay for it with black fish
+    var currentBlackFish = this.getTotalFishByType(GameConstants.FISH_TYPES.BLACK);
+    if(owe > currentBlackFish) {
+      return false;
+    }
+
+    // Okay, they have enough black fish, let's remove them
+    this.removeFishByType(GameConstants.FISH_TYPES.BLACK, amount);
+
+    return true;
   },
 
   /**
@@ -127,28 +175,30 @@ var GameStore = assign({}, EventEmitter.prototype, {
    */
   purchaseUpgrade: function(upgradeId) {
     var havePurchasedBefore = false;
-    var purchaseSuccessful = true;
 
     if(typeof savedData.upgrades === 'undefined') {
       savedData.upgrades = [];
     }
 
-    for(var i = 0; i < savedData.upgrades.length; i++) {
-      if(savedData.upgrades[i].ID === upgradeId) {
-        havePurchasedBefore = true;
-        savedData.upgrades[i].count++;
-        break;
-      }
-    }
-
-    if(!havePurchasedBefore) {
-      savedData.upgrades.push({
-        ID: upgradeId,
-        count: 1
-      });
-    }
+    var upgradeCost = this.getUpgradeCost(upgradeId);
+    var purchaseSuccessful = this.pay(upgradeCost);
 
     if(purchaseSuccessful) {
+      for(var i = 0; i < savedData.upgrades.length; i++) {
+        if(savedData.upgrades[i].ID === upgradeId) {
+          havePurchasedBefore = true;
+          savedData.upgrades[i].count++;
+          break;
+        }
+      }
+
+      if(!havePurchasedBefore) {
+        savedData.upgrades.push({
+          ID: upgradeId,
+          count: 1
+        });
+      }
+
       this.saveToBrowser();
       this.emitChange();
     }
